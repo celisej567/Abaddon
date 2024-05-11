@@ -352,6 +352,9 @@ MigrationBackup/
 abaddon.ini
 testdata/
 
+subprojects/gtkmm-master/
+subprojects/yyjson-master/
+
 build/
 out/
 
