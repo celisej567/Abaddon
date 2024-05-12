@@ -2658,8 +2658,8 @@ void DiscordClient::HeartbeatThread() {
 
         HeartbeatMessage msg;
         msg.Sequence = m_last_sequence;
-        nlohmann::json j = msg;
-        m_websocket.Send(j);
+        //nlohmann::json j = msg;
+        m_websocket.Send(msg.BuildJson());
 
         if (!m_heartbeat_waiter.wait_for(std::chrono::milliseconds(m_heartbeat_msec)))
             break;

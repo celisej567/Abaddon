@@ -517,6 +517,19 @@ struct IdentifyMessage : GatewayMessage {
 struct HeartbeatMessage : GatewayMessage {
     int Sequence;
 
+    std::string BuildJson() const
+    {
+        YYJsonDocument yyjsn;
+        yyjsn.CreateDoc();
+        yyjsn.AddInt("op", (int)GatewayOp::Heartbeat);
+        if (Sequence == -1)
+            yyjsn.AddNull("d");
+        else
+            yyjsn.AddInt("d", Sequence);
+
+        return yyjsn.BuildJson();
+    }
+
     friend void to_json(nlohmann::json &j, const HeartbeatMessage &m);
 };
 
