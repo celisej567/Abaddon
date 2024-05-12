@@ -49,13 +49,16 @@ file(GLOB_RECURSE ABADDON_SOURCES
 list(FILTER ABADDON_SOURCES EXCLUDE REGEX ".*notifier_gio\\.cpp$")
 list(FILTER ABADDON_SOURCES EXCLUDE REGEX ".*notifier_fallback\\.cpp$")
 
-add_executable(abaddon ${ABADDON_SOURCES})
+add_executable(abaddon ${ABADDON_SOURCES}
+    src/yyjson_util.h
+    src/yyjson_util.cpp)
 target_include_directories(abaddon PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_include_directories(abaddon PUBLIC ${PROJECT_BINARY_DIR})
 target_include_directories(abaddon PUBLIC ${GTKMM_INCLUDE_DIRS})
 target_include_directories(abaddon PUBLIC ${ZLIB_INCLUDE_DIRS})
 target_include_directories(abaddon PUBLIC ${SQLite3_INCLUDE_DIRS})
 target_include_directories(abaddon PUBLIC ${NLOHMANN_JSON_INCLUDE_DIRS})
+target_include_directories(abaddon PUBLIC ${GSTREAMER_INCLUDE_DIRS})
 
 if (ENABLE_QRCODE_LOGIN)
     add_library(qrcodegen subprojects/qrcodegen/cpp/qrcodegen.hpp subprojects/qrcodegen/cpp/qrcodegen.cpp)
@@ -140,6 +143,15 @@ if (USE_KEYCHAIN)
     endif ()
 endif ()
 
+# nu i huinya
+#add_subdirectory(subprojects/yyjson-master)
+add_library(yyjson STATIC
+        subprojects/yyjson-master/src/yyjson.h
+        subprojects/yyjson-master/src/yyjson.c)
+target_link_libraries(abaddon yyjson)
+
+target_include_directories(abaddon PUBLIC subprojects/yyjson-master/src)
+
 set(USE_MINIAUDIO FALSE)
 
 if (APPLE)
@@ -216,3 +228,4 @@ set(ABADDON_COMPILER_DEFS "" CACHE STRING "Additional compiler definitions")
 foreach (COMPILER_DEF IN LISTS ABADDON_COMPILER_DEFS)
     target_compile_definitions(abaddon PRIVATE "${COMPILER_DEF}")
 endforeach ()
+
