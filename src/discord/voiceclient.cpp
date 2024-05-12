@@ -364,7 +364,7 @@ void DiscordVoiceClient::Identify() {
     msg.Token = m_token;
     msg.Video = true;
 
-    m_ws.Send(msg);
+    m_ws.Send(msg.BuildJson());
 }
 
 void DiscordVoiceClient::Discovery() {
@@ -442,7 +442,7 @@ void DiscordVoiceClient::HeartbeatThread() {
 
         VoiceHeartbeatMessage msg;
         msg.Nonce = ms;
-        m_ws.Send(msg);
+        m_ws.Send(msg.BuildJson());
     }
 }
 

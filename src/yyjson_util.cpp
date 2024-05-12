@@ -95,6 +95,14 @@ void YYJsonDocument::AddInt(const char* name, std::optional<int> value)
 
 }
 
+void YYJsonDocument::AddUInt64(const char* name, uint64_t value)
+{
+    if(BuildingMode)
+    {
+        yyjson_mut_obj_add_uint(mutdoc,DataBlocks[currentBlockIndex],name,value);
+    }
+}
+
 //void YYJsonDocument::AddBool(const char* name, bool value)
 //{
 //    if(BuildingMode)

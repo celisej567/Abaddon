@@ -70,6 +70,7 @@ public:
     void AddString(const char* name, std::optional<std::string> value);
     //void AddInt(const char* name, int value);
     void AddInt(const char* name, std::optional<int> value);
+    void AddUInt64(const char* name, uint64_t value);
     //void AddBool(const char* name, bool value);
     void AddBool(const char* name, std::optional<bool> value);
     void AddBlock(const char* name, yyjson_mut_val* block);

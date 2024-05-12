@@ -61,6 +61,16 @@ struct VoiceHelloData {
 struct VoiceHeartbeatMessage {
     uint64_t Nonce;
 
+    std::string BuildJson() const
+    {
+        YYJsonDocument yyjsn;
+        yyjsn.CreateDoc();
+        yyjsn.AddInt("op", (int)GatewayOp::Heartbeat);
+        yyjsn.AddUInt64("d", Nonce);
+
+        return yyjsn.BuildJson();
+    }
+
     friend void to_json(nlohmann::json &j, const VoiceHeartbeatMessage &m);
 };
 
@@ -71,6 +81,34 @@ struct VoiceIdentifyMessage {
     std::string Token;
     bool Video;
     // todo streams i guess?
+
+    std::string BuildJson() const
+    {
+        YYJsonDocument yyjsn;
+        yyjsn.CreateDoc();
+        yyjsn.AddInt("op", (int)VoiceGatewayOp::Identify);
+        yyjsn.CreateBlock();
+        std::string* str = new std::string(std::to_string(ServerID));
+        yyjsn.AddString("server_id", str->c_str());
+        std::string* str2 = new std::string(std::to_string(UserID));
+        yyjsn.AddString("user_id", str2->c_str());
+        yyjsn.AddString("session_id", SessionID.c_str());
+        yyjsn.AddString("token", Token.c_str());
+        yyjsn.AddBool("video", Video);
+
+        YYJsonArray yyjsnarr;
+        YYJsonDocument yyjsn2;
+        yyjsn2.CreateDoc();
+        yyjsn2.AddString("type", "video");
+        yyjsn2.AddString("rid", "100");
+        yyjsn2.AddInt("quality", 100);
+        yyjsnarr.AddBlock(yyjsn2.GetMutableRoot());
+
+        yyjsn.AddArray("streams", yyjsnarr.GetArray());
+        yyjsn.PushBlock("d");
+
+        return yyjsn.BuildJson();
+    }
 
     friend void to_json(nlohmann::json &j, const VoiceIdentifyMessage &m);
 };
