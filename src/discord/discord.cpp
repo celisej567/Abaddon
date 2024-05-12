@@ -723,7 +723,7 @@ void DiscordClient::RemoveReaction(Snowflake id, Glib::ustring param) {
 void DiscordClient::SetGuildName(Snowflake id, const Glib::ustring &name, const sigc::slot<void(DiscordError code)> &callback) {
     ModifyGuildObject obj;
     obj.Name = name;
-    m_http.MakePATCH("/guilds/" + std::to_string(id), nlohmann::json(obj).dump(), [callback](const http::response_type &r) {
+    m_http.MakePATCH("/guilds/" + std::to_string(id), obj.BuildJson(), [callback](const http::response_type &r) {
         if (CheckCode(r))
             callback(DiscordError::NONE);
         else
@@ -734,7 +734,7 @@ void DiscordClient::SetGuildName(Snowflake id, const Glib::ustring &name, const 
 void DiscordClient::SetGuildIcon(Snowflake id, const std::string &data, const sigc::slot<void(DiscordError code)> &callback) {
     ModifyGuildObject obj;
     obj.IconData = data;
-    m_http.MakePATCH("/guilds/" + std::to_string(id), nlohmann::json(obj).dump(), [callback](const http::response_type &r) {
+    m_http.MakePATCH("/guilds/" + std::to_string(id), obj.BuildJson(), [callback](const http::response_type &r) {
         if (CheckCode(r))
             callback(DiscordError::NONE);
         else
@@ -2700,7 +2700,7 @@ void DiscordClient::SendResume() {
     msg.Sequence = m_last_sequence;
     msg.SessionID = m_session_id;
     msg.Token = m_token;
-    m_websocket.Send(msg);
+    m_websocket.Send(msg.BuildJson());
 }
 
 void DiscordClient::SetHeaders() {

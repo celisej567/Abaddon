@@ -651,6 +651,20 @@ struct ResumeMessage : GatewayMessage {
     std::string SessionID;
     int Sequence;
 
+    std::string BuildJson() const
+    {
+        YYJsonDocument yyjsn;
+        yyjsn.CreateDoc();
+        yyjsn.AddInt("op",(int)GatewayOp::Resume);
+        yyjsn.CreateBlock();
+        yyjsn.AddString("token",Token.c_str());
+        yyjsn.AddString("session_id",SessionID);
+        yyjsn.AddString("seq",SessionID);
+        yyjsn.PushBlock("d");
+
+        return yyjsn.BuildJson();
+    }
+
     friend void to_json(nlohmann::json &j, const ResumeMessage &m);
 };
 
@@ -724,6 +738,16 @@ struct TypingStartObject {
 struct ModifyGuildObject {
     std::optional<std::string> Name;
     std::optional<std::string> IconData;
+
+    std::string BuildJson() const
+    {
+        YYJsonDocument yyjsn;
+        yyjsn.CreateDoc();
+        if(Name.has_value())
+            yyjsn.AddString("name", Name);
+        if(IconData.has_value())
+            yyjsn.AddString("icon", IconData);
+    }
 
     friend void to_json(nlohmann::json &j, const ModifyGuildObject &m);
 };
